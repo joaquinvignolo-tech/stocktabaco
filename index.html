@@ -1246,3 +1246,52 @@ function rkScroll(cat){const el=document.getElementById('rk-cat-'+cat);if(el)el.
 if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/stocktabaco/sw.js').catch(e=>console.log('SW:',e));});}
 </script>
 </body></html>
+<script>
+// ── PREVENIR BOTÓN ATRÁS ──────────────────────────────────────────────────────
+history.pushState({page:'app'}, '', window.location.href);
+window.addEventListener('popstate', function() {
+  history.pushState({page:'app'}, '', window.location.href);
+  const auth = sessionStorage.getItem('stk_auth');
+  if (auth === 'operador') {
+    const prod = document.getElementById('op-state-producto');
+    const cam  = document.getElementById('op-state-camara');
+    const foto = document.getElementById('op-state-foto');
+    if (prod && prod.classList.contains('active'))      opNuevoEscaneo();
+    else if (cam && cam.classList.contains('active'))   cerrarCamara();
+    else if (foto && foto.classList.contains('active')) cerrarFotoIA();
+  } else if (auth === 'admin') {
+    closeSidebar();
+  }
+});
+
+// ── AUTO-SYNC CADA 30 SEGUNDOS ────────────────────────────────────────────────
+setInterval(async () => {
+  try {
+    const r = await fetch(JSONBIN_URL+'/latest', {headers:{'X-Master-Key':JSONBIN_KEY}});
+    const data = await r.json();
+    const rec = data.record;
+    if (!rec) return;
+    const remoteTs = rec.movimientos && rec.movimientos.length > 0 ? rec.movimientos[0].ts : 0;
+    const localTs  = movimientos.length > 0 ? movimientos[0].ts : 0;
+    if (remoteTs > localTs) {
+      productos = rec.productos || productos;
+      movimientos = rec.movimientos || movimientos;
+      marcas = rec.marcas || marcas;
+      proveedores = rec.proveedores || proveedores;
+      historialPrecios = rec.historialPrecios || historialPrecios;
+      nextProdId = rec.nextProdId || nextProdId;
+      const auth = sessionStorage.getItem('stk_auth');
+      if (auth === 'admin') {
+        const sec = document.querySelector('.section.active');
+        if (sec && sec.id === 'sec-dashboard') renderDashboard(); else renderStats();
+        renderAlertas();
+        const el = document.getElementById('sync-status');
+        if (el) { el.textContent = '🔄 Actualizado'; el.style.color = 'var(--accent)'; setTimeout(()=>el.textContent='', 2500); }
+      } else if (auth === 'operador') {
+        opRenderHistory();
+        if (opProd) { const p = productos.find(x=>x.id===opProd.id); if(p) opMostrarProducto(p); }
+      }
+    }
+  } catch(e) {}
+}, 30000);
+</script>
