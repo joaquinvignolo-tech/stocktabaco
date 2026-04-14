@@ -1213,7 +1213,31 @@ function importarDesdeExcel(input){const file=input.files[0];if(!file)return;con
 
 const JSONBIN_URL='https://api.jsonbin.io/v3/b/69d827dd856a6821891860dd',JSONBIN_KEY='$2a$10$Ak/ROkjve0.KIDucAODA6u0kGPk0JInh1k/SBjWfWFEsixXBSwwUK';
 let syncBusy=false;
-async function cargarDesdeBin(){try{const r=await fetch(JSONBIN_URL+'/latest',{headers:{'X-Master-Key':JSONBIN_KEY}}),data=await r.json(),rec=data.record;if(rec&&rec.productos&&rec.productos.length>0){productos=rec.productos;movimientos=rec.movimientos||[];marcas=rec.marcas||marcas;proveedores=rec.proveedores||[];historialPrecios=rec.historialPrecios||[];nextProdId=rec.nextProdId||(Math.max(...productos.map(p=>p.id))+1);nextMarcaId=rec.nextMarcaId||(Math.max(...marcas.map(m=>m.id))+1);nextProvId=rec.nextProvId||1;}else{await guardarEnBin();}}catch(e){console.warn('Error cargando:',e);}}
+async function cargarDesdeBin(){
+  const el=document.getElementById("sync-status");
+  try{
+    if(el){el.textContent="⏳ Cargando...";el.style.color="var(--text3)";}
+    const r=await fetch(JSONBIN_URL+"/latest",{headers:{"X-Master-Key":JSONBIN_KEY}});
+    const data=await r.json();
+    const rec=data.record;
+    if(rec&&rec.productos&&rec.productos.length>0){
+      productos=rec.productos;
+      movimientos=rec.movimientos||[];
+      marcas=rec.marcas||marcas;
+      proveedores=rec.proveedores||[];
+      historialPrecios=rec.historialPrecios||[];
+      nextProdId=rec.nextProdId||(Math.max(...productos.map(p=>p.id))+1);
+      nextMarcaId=rec.nextMarcaId||(Math.max(...marcas.map(m=>m.id))+1);
+      nextProvId=rec.nextProvId||1;
+      if(el){el.textContent="✓ Datos cargados";el.style.color="var(--green)";setTimeout(()=>el.textContent="",3000);}
+    } else {
+      await guardarEnBin();
+    }
+  } catch(e){
+    console.warn("Error cargando:",e);
+    if(el){el.textContent="⚠ Sin conexión";el.style.color="var(--danger)";}
+  }
+}
 async function guardarEnBin(){if(syncBusy)return;syncBusy=true;try{await fetch(JSONBIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify({productos,movimientos,marcas,proveedores,historialPrecios,nextProdId,nextMarcaId,nextProvId})});const el=document.getElementById('sync-status');if(el){el.textContent='✓ Guardado';el.style.color='var(--green)';setTimeout(()=>el.textContent='',3000);}}catch(e){const el=document.getElementById('sync-status');if(el){el.textContent='⚠ Sin conexión';el.style.color='var(--danger)';}}finally{syncBusy=false;}}
 function populateRecProv(){const s=document.getElementById('rec-prov');if(s)s.innerHTML='<option value="">— Sin proveedor —</option>'+proveedores.map(p=>'<option value="'+p.id+'">'+p.nombre+'</option>').join('');}
 
