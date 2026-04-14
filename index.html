@@ -610,7 +610,7 @@ tbody tr:hover td{background:var(--surface2);}
         </div>
         <div class="op-qty-controls">
           <button class="op-qty-btn minus" onclick="opCambiarQty(-1)">−</button>
-          <span class="op-qty-num" id="op-qty-display">1</span>
+          <input type="number" id="op-qty-display" class="op-qty-num" value="1" min="1" inputmode="numeric" oninput="opQtyManual(this.value)" style="width:80px;background:transparent;border:none;outline:none;text-align:center;font-family:'Syne',sans-serif;-moz-appearance:textfield;" onclick="this.select()">
           <button class="op-qty-btn plus" onclick="opCambiarQty(1)">+</button>
         </div>
       </div>
@@ -967,7 +967,7 @@ function opMostrarProducto(p){
       </div>
       <span class="badge ${e.cls} op-status-badge">${e.label}</span>
     </div>`;
-  document.getElementById('op-qty-display').textContent=1;
+  document.getElementById('op-qty-display').value=1;
   document.getElementById('op-nota').value='';
   document.getElementById('op-tab-ret').classList.add('active');
   document.getElementById('op-tab-rec').classList.remove('active');
@@ -989,22 +989,29 @@ function opSeleccionarModo(modo){
 
 function opCambiarQty(d){
   opQty=Math.max(1,opQty+d);
-  document.getElementById('op-qty-display').textContent=opQty;
+  document.getElementById('op-qty-display').value=opQty;
   opActualizarConfirmar();
 }
 function opSetQty(n){
   opQty=n;
-  document.getElementById('op-qty-display').textContent=opQty;
+  document.getElementById('op-qty-display').value=opQty;
+  opActualizarConfirmar();
+}
+function opQtyManual(val){
+  const n=parseInt(val)||1;
+  opQty=Math.max(1,n);
   opActualizarConfirmar();
 }
 function opActualizarConfirmar(){
+  // Leer siempre del input por si fue editado manualmente
+  const input=document.getElementById('op-qty-display');
+  if(input) opQty=Math.max(1,parseInt(input.value)||1);
   const btn=document.getElementById('op-confirm-btn');
-  const numEl=document.getElementById('op-qty-display');
   if(!opProd){btn.disabled=true;return;}
   if(opModo==='retiro'&&opQty>opProd.stock){
-    btn.disabled=true;numEl.style.color='var(--danger)';
+    btn.disabled=true;if(input)input.style.color='var(--danger)';
   } else {
-    btn.disabled=false;numEl.style.color='';
+    btn.disabled=false;if(input)input.style.color='';
   }
 }
 
