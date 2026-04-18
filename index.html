@@ -1423,18 +1423,19 @@ if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.se
 </body></html>
 <script>
 // ── MIGRAR LOTES EXISTENTES ──────────────────────────────────────────────────
+function fmtFecha(f){if(!f)return '';const p=f.split('-');if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0];return f;}
 function migrarLotes(){
   let cambiados = 0;
+  // Renombrar TODOS los lotes al formato DD/MM/YYYY (incluso los que ya tienen lote con formato viejo)
   movimientos.forEach(m => {
-    if(m.lote) return; // ya tiene lote
-    // Si el motivo contiene una clave de retiro/recepción, usarlo como lote
-    if(m.motivo && m.motivo !== 'Sin nota' && m.motivo.trim() !== '') {
-      m.lote = m.motivo.trim();
+    const tipo = m.tipo === 'salida' ? 'Retiro operador' : 'Recepción operador';
+    const fechaFmt = fmtFecha(m.fecha);
+    // Si el lote tiene formato YYYY-MM-DD, convertirlo
+    if(m.lote && m.lote.match(/\d{4}-\d{2}-\d{2}/)) {
+      m.lote = m.lote.replace(/\d{4}-\d{2}-\d{2}/, (match) => fmtFecha(match));
       cambiados++;
-    } else {
-      // Agrupar por tipo + fecha
-      const loteAuto = (m.tipo === 'salida' ? 'Retiro' : 'Recepción') + ' ' + m.fecha;
-      m.lote = loteAuto;
+    } else if(!m.lote) {
+      m.lote = tipo + ' ' + fechaFmt;
       cambiados++;
     }
   });
