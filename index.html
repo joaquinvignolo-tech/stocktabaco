@@ -1424,22 +1424,17 @@ if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.se
 <script>
 // ── MIGRAR LOTES EXISTENTES ──────────────────────────────────────────────────
 function normalizarFechasLotes(){
-  let hubo=false;
+  // Solo formatea en memoria, NO guarda en el bin para evitar perder datos
   movimientos.forEach(m=>{
     if(!m.lote || !m.fecha) return;
-    // Convertir fecha YYYY-MM-DD a DD/MM/YYYY
     const f=m.fecha;
     const fechaFmt = f.length===10 && f[4]==='-' && f[7]==='-'
       ? f.substring(8,10)+'/'+f.substring(5,7)+'/'+f.substring(0,4)
       : f;
-    // Si el lote no tiene fecha o tiene formato incorrecto, agregar/corregir
-    const tieneFormatoCorrecto = m.lote.includes('/');
-    if(!tieneFormatoCorrecto){
+    if(!m.lote.includes('/')){
       m.lote = m.lote.trim() + ' ' + fechaFmt;
-      hubo=true;
     }
   });
-  if(hubo) guardarEnBin();
 }
 function fmtFecha(f){if(!f)return '';const p=f.split('-');if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0];return f;}
 function migrarLotes(){
