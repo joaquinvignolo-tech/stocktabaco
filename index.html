@@ -791,7 +791,7 @@ function doLogin(){
     sessionStorage.setItem('stk_auth','admin');
     document.getElementById('loginOverlay').style.display='none';
     document.getElementById('admin-ui').style.display='block';
-    cargarDesdeBin().then(()=>{renderDashboard();renderSelectMarca();renderSelectProv();renderAlertas();});
+    cargarDesdeBin().then(()=>{normalizarFechasLotes();renderDashboard();renderSelectMarca();renderSelectProv();renderAlertas();});
   } else if(loginMode==='operador'&&pass===PASS_OP){
     sessionStorage.setItem('stk_auth','operador');
     document.getElementById('loginOverlay').style.display='none';
@@ -815,7 +815,7 @@ function cerrarSesion(){
 }
 window.addEventListener('load',()=>{
   const auth=sessionStorage.getItem('stk_auth');
-  if(auth==='admin'){document.getElementById('loginOverlay').style.display='none';document.getElementById('admin-ui').style.display='block';cargarDesdeBin().then(()=>{renderDashboard();renderSelectMarca();renderSelectProv();renderAlertas();});}
+  if(auth==='admin'){document.getElementById('loginOverlay').style.display='none';document.getElementById('admin-ui').style.display='block';cargarDesdeBin().then(()=>{normalizarFechasLotes();renderDashboard();renderSelectMarca();renderSelectProv();renderAlertas();});}
   else if(auth==='operador'){document.getElementById('loginOverlay').style.display='none';document.getElementById('modo-operador').classList.add('active');cargarDesdeBin().then(()=>opRenderHistory());}
   else{document.getElementById('loginOverlay').style.display='flex';}
 });
@@ -1423,6 +1423,24 @@ if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.se
 </body></html>
 <script>
 // ── MIGRAR LOTES EXISTENTES ──────────────────────────────────────────────────
+function normalizarFechasLotes(){
+  let hubo=false;
+  movimientos.forEach(m=>{
+    if(!m.lote) return;
+    // Buscar patron YYYY-MM-DD (4 digitos, guion, 2 digitos, guion, 2 digitos)
+    const partes = m.lote.split(' ');
+    const nuevaPartes = partes.map(p=>{
+      if(p.length===10 && p[4]==='-' && p[7]==='-'){
+        const y=p.substring(0,4), mo=p.substring(5,7), d=p.substring(8,10);
+        hubo=true;
+        return d+'/'+mo+'/'+y;
+      }
+      return p;
+    });
+    m.lote = nuevaPartes.join(' ');
+  });
+  if(hubo) guardarEnBin();
+}
 function fmtFecha(f){if(!f)return '';const p=f.split('-');if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0];return f;}
 function migrarLotes(){
   let cambiados = 0;
