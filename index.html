@@ -348,7 +348,13 @@ tbody tr:hover td{background:var(--surface2);}
       </div>
       <div class="dash-grid-2">
         <div class="card"><div class="card-header"><span class="card-title">Alertas de stock</span></div><div id="dash-alertas"></div></div>
-        <div class="card"><div class="card-header"><span class="card-title">Últimos movimientos</span></div><div id="dash-movs" style="max-height:420px;overflow-y:auto;scroll-behavior:smooth"></div></div>
+        <div class="card">
+        <div class="card-header">
+          <span class="card-title">Últimos movimientos</span>
+          <button class="btn btn-sm" onclick="migrarLotes()" id="btn-migrar" title="Agrupar movimientos existentes por fecha">🔧 Agrupar</button>
+        </div>
+        <div id="dash-movs" style="max-height:420px;overflow-y:auto;scroll-behavior:smooth"></div>
+      </div>
       </div>
       <div class="card"><div class="card-header"><span class="card-title">Stock por marca</span></div><div class="marca-grid" id="dash-marcas"></div></div>
     </div>
@@ -1416,6 +1422,30 @@ if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.se
 </script>
 </body></html>
 <script>
+// ── MIGRAR LOTES EXISTENTES ──────────────────────────────────────────────────
+function migrarLotes(){
+  let cambiados = 0;
+  movimientos.forEach(m => {
+    if(m.lote) return; // ya tiene lote
+    // Si el motivo contiene una clave de retiro/recepción, usarlo como lote
+    if(m.motivo && m.motivo !== 'Sin nota' && m.motivo.trim() !== '') {
+      m.lote = m.motivo.trim();
+      cambiados++;
+    } else {
+      // Agrupar por tipo + fecha
+      const loteAuto = (m.tipo === 'salida' ? 'Retiro' : 'Recepción') + ' ' + m.fecha;
+      m.lote = loteAuto;
+      cambiados++;
+    }
+  });
+  guardarEnBin();
+  renderDashboard();
+  notify('✓ ' + cambiados + ' movimientos agrupados');
+  // Ocultar botón después de migrar
+  const btn = document.getElementById('btn-migrar');
+  if(btn) btn.style.display = 'none';
+}
+
 // ── PREVENIR BOTÓN ATRÁS ──────────────────────────────────────────────────────
 history.pushState({page:'app'}, '', window.location.href);
 window.addEventListener('popstate', function() {
