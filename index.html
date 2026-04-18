@@ -14,38 +14,38 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 :root {
-  --bg:#1a1612; --surface:#231f1a; --surface2:#2d2820; --surface3:#352f26;
-  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
-  --text:#f0ebe3; --text2:#a89880; --text3:#6b5e4e;
-  --accent:#c8965a; --accent-light:rgba(200,150,90,0.15);
-  --green:#5a9e6e; --green-light:rgba(90,158,110,0.15);
-  --warn:#d4924a; --warn-light:rgba(212,146,74,0.15);
-  --danger:#c05050; --danger-light:rgba(192,80,80,0.15);
+  --bg:#f0f4f8; --surface:#ffffff; --surface2:#f8fafc; --surface3:#eef2f7;
+  --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.12);
+  --text:#1e293b; --text2:#64748b; --text3:#94a3b8;
+  --accent:#2563eb; --accent-light:rgba(37,99,235,0.1);
+  --green:#16a34a; --green-light:rgba(22,163,74,0.1);
+  --warn:#d97706; --warn-light:rgba(217,119,6,0.1);
+  --danger:#dc2626; --danger-light:rgba(220,38,38,0.1);
   --radius:10px; --radius-lg:14px; --radius-xl:20px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;overscroll-behavior:none;}
 
 /* ── LOGIN ── */
-.login-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
+.login-overlay{position:fixed;inset:0;background:#f0f4f8;z-index:9999;display:flex;align-items:center;justify-content:center;}
 .login-wrap{width:100%;max-width:400px;padding:24px;}
-.login-logo{font-size:28px;font-weight:800;letter-spacing:2px;text-align:center;margin-bottom:6px;text-transform:uppercase;}
+.login-logo{font-size:28px;font-weight:800;letter-spacing:2px;text-align:center;margin-bottom:6px;text-transform:uppercase;color:#1e293b;}
 .login-logo span{color:var(--accent);}
 .login-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:32px;}
 .login-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
 .login-mode-btn{padding:20px 12px;border-radius:var(--radius-xl);border:2px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:all .2s;text-align:center;}
 .login-mode-btn .mode-icon{font-size:32px;display:block;margin-bottom:8px;}
-.login-mode-btn.selected{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
+.login-mode-btn.selected{border-color:#2563eb;background:rgba(37,99,235,0.08);color:#2563eb;}
 .login-field{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:14px 16px;font-size:15px;color:var(--text);margin-bottom:12px;outline:none;font-family:inherit;}
 .login-field:focus{border-color:var(--accent);}
-.login-btn{width:100%;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius-lg);padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:1px;text-transform:uppercase;}
+.login-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-lg);padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:1px;text-transform:uppercase;}
 .login-btn:hover{opacity:.88;}
 .login-error{color:var(--danger);font-size:12px;margin-top:8px;min-height:18px;text-align:center;}
 .login-hint{font-size:11px;color:var(--text3);text-align:center;margin-top:16px;line-height:1.7;}
 .login-hint code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:'DM Mono',monospace;}
 
 /* ── ADMIN HEADER ── */
-.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
 .app-logo{font-size:15px;font-weight:700;letter-spacing:1px;display:flex;align-items:center;gap:10px;text-transform:uppercase;}
 .logo-accent{color:var(--accent);}
 .header-btns{display:flex;gap:8px;align-items:center;}
@@ -59,11 +59,11 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);font-s
 
 /* ── ADMIN LAYOUT ── */
 .app-main{display:flex;min-height:calc(100vh - 56px);}
-.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);padding:16px 12px;flex-shrink:0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;transition:transform .25s ease;}
+.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);box-shadow:2px 0 8px rgba(0,0,0,0.04);padding:16px 12px;flex-shrink:0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;transition:transform .25s ease;}
 .nav-section{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:10px 12px 4px;}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius);cursor:pointer;font-size:13px;color:var(--text2);font-weight:500;border:none;background:none;width:100%;text-align:left;transition:all .15s;margin-bottom:2px;}
 .nav-item:hover{background:var(--surface2);color:var(--text);}
-.nav-item.active{background:var(--accent-light);color:var(--accent);}
+.nav-item.active{background:var(--accent-light);color:var(--accent);font-weight:700;}
 .nav-icon{font-size:14px;width:18px;text-align:center;}
 .content{flex:1;padding:20px;overflow-x:hidden;}
 .section{display:none;}
@@ -71,11 +71,11 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);font-s
 
 /* ── ADMIN COMPONENTS ── */
 .stats-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px;}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;transition:border-color .15s;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
 .stat-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
 .stat-val{font-size:24px;font-weight:700;letter-spacing:-.5px;}
 .stat-val.accent{color:var(--accent);} .stat-val.green{color:var(--green);} .stat-val.warn{color:var(--warn);} .stat-val.danger{color:var(--danger);}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
 .card-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
 .form-grid{display:grid;gap:12px;}
@@ -87,7 +87,7 @@ input::placeholder{color:var(--text3);}
 input:focus,select:focus{border-color:var(--accent);}
 .btn{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:8px 16px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;}
 .btn:hover{background:var(--surface3);} .btn:active{transform:scale(.97);}
-.btn-accent{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700;} .btn-accent:hover{opacity:.85;}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;} .btn-accent:hover{opacity:.85;}
 .btn-sm{font-size:11px;padding:5px 10px;}
 .btn-danger{border-color:var(--danger);color:var(--danger);} .btn-danger:hover{background:var(--danger-light);}
 .btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
@@ -140,7 +140,7 @@ tbody tr:hover td{background:var(--surface2);}
 #modo-operador.active{display:flex;}
 .op-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .op-header-logo{font-size:14px;font-weight:800;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
-.op-badge{background:var(--accent);color:var(--bg);font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;}
+.op-badge{background:var(--accent);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;}
 .op-exit-btn{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--text3);font-size:12px;padding:6px 12px;cursor:pointer;font-family:inherit;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
 .op-body{flex:1;padding:20px 16px;padding-bottom:calc(32px + env(safe-area-inset-bottom));}
 
@@ -150,7 +150,7 @@ tbody tr:hover td{background:var(--surface2);}
 .op-scan-circle:active{border-color:var(--accent);background:var(--accent-light);}
 .op-scan-circle::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--accent);opacity:0;animation:pulse-ring 2s ease-out infinite;}
 @keyframes pulse-ring{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(1.15)}}
-.op-scan-icon{font-size:56px;line-height:1;}
+.op-scan-icon{font-size:56px;line-height:1;display:flex;align-items:center;justify-content:center;}
 .op-scan-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
 .op-methods{display:flex;gap:12px;width:100%;max-width:340px;}
 .op-method-btn{flex:1;padding:16px 12px;border-radius:var(--radius-xl);border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:all .15s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;}
@@ -233,8 +233,8 @@ tbody tr:hover td{background:var(--surface2);}
 .op-nota{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:12px 14px;font-size:14px;color:var(--text);font-family:inherit;width:100%;resize:none;outline:none;}
 .op-nota:focus{border-color:var(--accent);}
 .op-confirm-btn{width:100%;padding:18px;border-radius:var(--radius-xl);border:none;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:10px;}
-.op-confirm-btn.retiro{background:var(--danger);color:white;}
-.op-confirm-btn.recepcion{background:var(--green);color:white;}
+.op-confirm-btn.retiro{background:var(--danger);color:#fff;}
+.op-confirm-btn.recepcion{background:var(--green);color:#fff;}
 .op-confirm-btn:active{transform:scale(.97);opacity:.88;}
 .op-confirm-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 .op-rescan-btn{width:100%;padding:14px;border-radius:var(--radius-xl);border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;justify-content:center;gap:8px;}
@@ -300,9 +300,7 @@ tbody tr:hover td{background:var(--surface2);}
     <input type="password" class="login-field" id="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="login-btn" onclick="doLogin()">Ingresar</button>
     <div class="login-error" id="loginError"></div>
-    <div class="login-hint">
-      Admin: <code>tabaco2024</code> &nbsp;·&nbsp; Operador: <code>operador2024</code>
-    </div>
+
   </div>
 </div>
 
@@ -476,7 +474,7 @@ tbody tr:hover td{background:var(--surface2);}
         <div id="rec-vacio" style="font-size:13px;color:var(--text3);padding:14px 0">Agregá productos arriba.</div>
         <div id="rec-tabla-wrap" style="display:none"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="border-bottom:1px solid var(--border2)"><th style="text-align:left;padding:8px 6px;color:var(--text3);font-size:11px">PRODUCTO</th><th style="text-align:right;padding:8px 6px;color:var(--text3);font-size:11px">STOCK</th><th style="text-align:right;padding:8px 6px;color:var(--text3);font-size:11px">CANT.</th><th style="text-align:right;padding:8px 6px;color:var(--text3);font-size:11px">FINAL</th><th style="padding:8px 6px"></th></tr></thead><tbody id="rec-tbody"></tbody><tfoot><tr style="border-top:1px solid var(--border2);background:var(--surface2)"><td colspan="2" style="padding:10px 6px;font-weight:700;font-size:11px;text-transform:uppercase">Total</td><td style="text-align:right;padding:10px 6px;font-weight:700;color:var(--green)" id="rec-total">0</td><td colspan="2"></td></tr></tfoot></table></div>
       </div>
-      <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-sm" onclick="recLimpiar()">Limpiar</button><button class="btn" style="background:var(--green);border-color:var(--green);font-weight:700" onclick="recConfirmar()">Confirmar recepción</button></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-sm" onclick="recLimpiar()">Limpiar</button><button class="btn" style="background:var(--green);border-color:var(--green);font-weight:700;color:#fff" onclick="recConfirmar()">Confirmar recepción</button></div>
     </div>
     <div id="sec-ranking" class="section">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
@@ -521,17 +519,42 @@ tbody tr:hover td{background:var(--surface2);}
     <!-- IDLE: pantalla principal -->
     <div class="op-idle" id="op-idle">
       <div class="op-scan-circle" onclick="iniciarEscanerBarras()">
-        <span class="op-scan-icon">📷</span>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="14" width="4" height="36" rx="1" fill="#2563eb"/>
+        <rect x="15" y="14" width="2" height="36" rx="1" fill="#2563eb"/>
+        <rect x="20" y="14" width="5" height="36" rx="1" fill="#2563eb"/>
+        <rect x="28" y="14" width="3" height="36" rx="1" fill="#2563eb"/>
+        <rect x="34" y="14" width="2" height="36" rx="1" fill="#2563eb"/>
+        <rect x="39" y="14" width="6" height="36" rx="1" fill="#2563eb"/>
+        <rect x="48" y="14" width="2" height="36" rx="1" fill="#2563eb"/>
+        <rect x="53" y="14" width="3" height="36" rx="1" fill="#2563eb"/>
+        <line x1="6" y1="32" x2="58" y2="32" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="3 2"/>
+      </svg>
         <span class="op-scan-label">Tap para escanear</span>
       </div>
 
       <div class="op-methods">
         <button class="op-method-btn" onclick="iniciarEscanerBarras()">
-          <span class="op-method-icon">〓</span>
+          <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+            <rect x="4" y="8" width="3" height="24" rx="1" fill="#2563eb"/>
+            <rect x="10" y="8" width="1.5" height="24" rx="1" fill="#2563eb"/>
+            <rect x="14" y="8" width="3.5" height="24" rx="1" fill="#2563eb"/>
+            <rect x="20" y="8" width="2" height="24" rx="1" fill="#2563eb"/>
+            <rect x="25" y="8" width="1.5" height="24" rx="1" fill="#2563eb"/>
+            <rect x="29" y="8" width="4" height="24" rx="1" fill="#2563eb"/>
+            <rect x="36" y="8" width="1" height="24" rx="1" fill="#2563eb"/>
+          </svg>
           Código de barras
         </button>
         <button class="op-method-btn" onclick="iniciarFotoIA()">
-          <span class="op-method-icon">🤖</span>
+          <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+            <rect x="4" y="11" width="32" height="22" rx="4" stroke="#2563eb" stroke-width="2" fill="none"/>
+            <circle cx="20" cy="22" r="6" stroke="#2563eb" stroke-width="2" fill="none"/>
+            <circle cx="20" cy="22" r="2.5" fill="#2563eb"/>
+            <rect x="14" y="7" width="12" height="5" rx="2" stroke="#2563eb" stroke-width="2" fill="none"/>
+            <path d="M30 9 L31.5 12 L30 15 L28.5 12 Z" fill="#dc2626"/>
+            <path d="M35 6 L36 8.5 L35 11 L34 8.5 Z" fill="#2563eb" opacity=".6"/>
+          </svg>
           Foto + IA
         </button>
       </div>
@@ -1144,7 +1167,55 @@ function renderDashboard(){
   renderStats();
   const alertas=productos.filter(p=>estadoProd(p).key!=='ok').sort((a,b)=>a.stock-b.stock);
   document.getElementById('dash-alertas').innerHTML=alertas.length?alertas.map(p=>{const e=estadoProd(p),m=getMarca(p.marcaId);return `<div class="alert-row"><div class="alert-dot" style="background:${p.stock===0?'var(--danger)':'var(--warn)'}"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">${p.nombre}</div><div style="font-size:11px;color:var(--text3)">${m?m.nombre+' · ':''}${p.variedad||''} — Stock: ${p.stock}</div></div><span class="badge ${e.cls}">${e.label}</span></div>`;}).join(''):'<div style="font-size:13px;color:var(--green);padding:8px 0">✓ Sin alertas activas.</div>';
-  document.getElementById('dash-movs').innerHTML=movimientos.length?[...movimientos].slice(0,8).map(m=>`<div class="mov-row"><span class="mov-type ${m.tipo==='entrada'?'mov-entrada':'mov-salida'}">${m.tipo==='entrada'?'+'+m.cant:'-'+m.cant}</span><div style="flex:1"><div style="font-size:13px">${m.nombre}</div><div style="font-size:11px;color:var(--text3)">${m.motivo||''} ${m.fecha}</div></div></div>`).join(''):'<div style="font-size:13px;color:var(--text3);padding:8px 0">Sin movimientos aún.</div>';
+  // Agrupar movimientos por lote, o individuales si no tienen lote
+  const grupos = [];
+  const vistos = new Set();
+  [...movimientos].forEach(m => {
+    if(m.lote) {
+      if(!vistos.has(m.lote)) {
+        vistos.add(m.lote);
+        const delLote = movimientos.filter(x=>x.lote===m.lote);
+        const totalUds = delLote.reduce((s,x)=>s+x.cant,0);
+        grupos.push({tipo:'lote', lote:m.lote, fecha:m.fecha, items:delLote, totalUds, movTipo:m.tipo});
+      }
+    } else {
+      grupos.push({tipo:'individual', ...m});
+    }
+  });
+  const primeros = grupos.slice(0,8);
+  document.getElementById('dash-movs').innerHTML = movimientos.length ? primeros.map((g,gi) => {
+    if(g.tipo==='lote') {
+      const icono = g.movTipo==='entrada' ? '📥' : '📤';
+      const color = g.movTipo==='entrada' ? 'var(--green)' : 'var(--danger)';
+      const signo = g.movTipo==='entrada' ? '+' : '-';
+      const itemsHtml = g.items.map(it=>
+        `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px">
+          <span style="color:var(--text2)">${it.nombre}</span>
+          <span style="font-weight:700;color:${color}">${signo}${it.cant}</span>
+        </div>`
+      ).join('');
+      return `<div style="border-bottom:1px solid var(--border)">
+        <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.arr').textContent=this.nextElementSibling.style.display==='none'?'▶':'▼'"
+          style="display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;user-select:none">
+          <span style="font-size:18px">${icono}</span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">${g.lote}</div>
+            <div style="font-size:11px;color:var(--text3)">${g.items.length} productos · ${signo}${g.totalUds} uds · ${g.fecha}</div>
+          </div>
+          <span class="arr" style="color:var(--text3);font-size:12px">▶</span>
+        </div>
+        <div style="display:none;padding:0 0 10px 28px">${itemsHtml}</div>
+      </div>`;
+    } else {
+      const color = g.tipo==='entrada'?'mov-entrada':'mov-salida';
+      const signo = g.tipo==='entrada'?'+'+g.cant:'-'+g.cant;
+      return `<div class="mov-row">
+        <span class="mov-type ${color}">${signo}</span>
+        <div style="flex:1"><div style="font-size:13px">${g.nombre}</div>
+        <div style="font-size:11px;color:var(--text3)">${g.motivo||''} ${g.fecha}</div></div>
+      </div>`;
+    }
+  }).join('') : '<div style="font-size:13px;color:var(--text3);padding:8px 0">Sin movimientos aún.</div>';
   document.getElementById('dash-marcas').innerHTML=marcas.filter(mr=>productos.some(p=>p.marcaId===mr.id)).map(mr=>{const ps=productos.filter(p=>p.marcaId===mr.id);return `<div class="marca-card"><div class="marca-card-name">${mr.nombre}</div><div class="marca-card-sub">${ps.length} variedad${ps.length!==1?'es':''}</div><div class="marca-card-stock">${ps.reduce((a,p)=>a+p.stock,0)}</div><div style="font-size:10px;color:var(--text3);margin-top:2px">unidades</div></div>`;}).join('');
   setTimeout(renderCharts,50);
 }
