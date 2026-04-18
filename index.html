@@ -348,7 +348,7 @@ tbody tr:hover td{background:var(--surface2);}
       </div>
       <div class="dash-grid-2">
         <div class="card"><div class="card-header"><span class="card-title">Alertas de stock</span></div><div id="dash-alertas"></div></div>
-        <div class="card"><div class="card-header"><span class="card-title">Últimos movimientos</span></div><div id="dash-movs" style="max-height:280px;overflow-y:auto"></div></div>
+        <div class="card"><div class="card-header"><span class="card-title">Últimos movimientos</span></div><div id="dash-movs" style="max-height:420px;overflow-y:auto;scroll-behavior:smooth"></div></div>
       </div>
       <div class="card"><div class="card-header"><span class="card-title">Stock por marca</span></div><div class="marca-grid" id="dash-marcas"></div></div>
     </div>
@@ -1195,7 +1195,7 @@ function renderDashboard(){
         </div>`
       ).join('');
       return `<div style="border-bottom:1px solid var(--border)">
-        <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.arr').textContent=this.nextElementSibling.style.display==='none'?'▶':'▼'"
+        <div onclick="const det=this.nextElementSibling;const abre=det.style.display==='none';det.style.display=abre?'block':'none';this.querySelector('.arr').textContent=abre?'▼':'▶';if(abre)setTimeout(()=>det.scrollIntoView({behavior:'smooth',block:'nearest'}),50)"
           style="display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;user-select:none">
           <span style="font-size:18px">${icono}</span>
           <div style="flex:1">
