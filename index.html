@@ -1056,12 +1056,12 @@ function opConfirmar(){
   if(opModo==='retiro'){
     if(opQty>p.stock){opToast('Stock insuficiente ('+p.stock+' disponibles)','error');return;}
     p.stock-=opQty;
-    const loteOp='Retiro operador '+todayStr();
+    const hoy=todayStr().split('-');const loteOp='Retiro operador '+hoy[2]+'/'+hoy[1];
     movimientos.unshift({prodId:p.id,nombre:p.nombre,tipo:'salida',cant:opQty,motivo:nota||loteOp,fecha:todayStr(),ts:Date.now(),lote:loteOp});
     opToast('-'+opQty+' · '+p.nombre,'success');
   } else {
     p.stock+=opQty;
-    const loteOpRec='Recepción operador '+todayStr();
+    const hoyR=todayStr().split('-');const loteOpRec='Recepción operador '+hoyR[2]+'/'+hoyR[1];
     movimientos.unshift({prodId:p.id,nombre:p.nombre,tipo:'entrada',cant:opQty,motivo:nota||loteOpRec,fecha:todayStr(),ts:Date.now(),lote:loteOpRec});
     opToast('+'+opQty+' · '+p.nombre,'info');
   }
