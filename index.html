@@ -11,6 +11,31 @@
 <title>StockTabaco</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCzdg7fR8CeA2xa58H8Z4HviM78Qvu_LCE",
+    authDomain: "stock-tabaco.firebaseapp.com",
+    projectId: "stock-tabaco",
+    storageBucket: "stock-tabaco.firebasestorage.app",
+    messagingSenderId: "204176427528",
+    appId: "1:204176427528:web:344ec4c7a91037fcde9fbd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const docRef = doc(db, "inventario", "datos");
+
+  // Exponer funciones al scope global
+  window._fbSetDoc = (data) => setDoc(docRef, data);
+  window._fbOnSnapshot = (cb) => onSnapshot(docRef, snap => { if(snap.exists()) cb(snap.data()); });
+  window._fbReady = true;
+
+  // Avisar que Firebase está listo
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 :root {
@@ -1314,44 +1339,59 @@ function guardarArchivo(){
 }
 function importarDesdeExcel(input){const file=input.files[0];if(!file)return;const r=new FileReader();r.onload=function(e){try{const wb=XLSX.read(e.target.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],rows=XLSX.utils.sheet_to_json(ws,{defval:''});if(!rows.length){notify('Archivo vacío.');return;}const col=(row,...keys)=>{for(const k of keys)for(const rk of Object.keys(row))if(rk.trim().toLowerCase()===k.toLowerCase())return row[rk];return '';};const mm={};marcas.forEach(m=>mm[m.nombre.toUpperCase()]=m.id);const nuevos=[];let maxId=Math.max(0,...productos.map(p=>p.id));rows.forEach(row=>{const nombre=String(col(row,'Producto','Nombre')||'').trim();if(!nombre)return;const mn=String(col(row,'Marca')||'').trim().toUpperCase();let marcaId=null;if(mn){if(!mm[mn]){const nid=nextMarcaId++;marcas.push({id:nid,nombre:mn,cat:'Cigarrillos'});mm[mn]=nid;}marcaId=mm[mn];}const barcode=String(col(row,'Código','Codigo')||'').trim(),ex=barcode?productos.find(p=>p.barcode===barcode):productos.find(p=>p.nombre.toUpperCase()===nombre.toUpperCase()),datos={barcode,nombre,cat:String(col(row,'Categoría','Categoria')||'Cigarrillos').trim(),marcaId,variedad:String(col(row,'Variedad')||'').trim(),presentacion:String(col(row,'Presentación','Presentacion')||'').trim(),stock:parseInt(col(row,'Stock','Cantidad'))||0,min:parseInt(col(row,'Mínimo','Minimo'))||0,costo:parseFloat(col(row,'Costo','Precio costo'))||0,venta:parseFloat(col(row,'Venta','Precio venta'))||0,ubic:String(col(row,'Ubicación')||'').trim(),provId:null};if(ex){Object.assign(ex,datos);}else{maxId++;nuevos.push({id:maxId,...datos});}});productos.push(...nuevos);nextProdId=Math.max(nextProdId,maxId+1);renderDashboard();renderTabla();renderMarcas();renderSelectMarca();renderFiltroMarca();renderSelectProv();renderAlertas();renderReporte();notify(nuevos.length?`Importado: ${rows.length-nuevos.length} actualizados, ${nuevos.length} nuevos.`:`Importado: ${rows.length} actualizados.`);guardarEnBin();}catch(err){notify('Error al leer el Excel.');console.error(err);}input.value='';};r.readAsArrayBuffer(file);}
 
-const JSONBIN_URL='https://api.jsonbin.io/v3/b/69d827dd856a6821891860dd',JSONBIN_KEY='$2a$10$Ak/ROkjve0.KIDucAODA6u0kGPk0JInh1k/SBjWfWFEsixXBSwwUK';
 let syncBusy=false;
 async function cargarDesdeBin(){
   const el=document.getElementById("sync-status");
+  if(el){el.textContent="⏳ Cargando...";el.style.color="var(--text3)";}
+  // Esperar que Firebase esté listo
+  await new Promise(res=>{
+    if(window._fbReady){res();}
+    else{window.addEventListener('firebase-ready',res,{once:true});}
+  });
   try{
-    if(el){el.textContent="⏳ Cargando...";el.style.color="var(--text3)";}
-    const r=await fetch(JSONBIN_URL+"/latest",{headers:{"X-Master-Key":JSONBIN_KEY}});
-    const data=await r.json();
-    const rec=data.record;
-    if(rec&&rec.productos&&rec.productos.length>0){
-      productos=rec.productos;
-      movimientos=rec.movimientos||[];
-      marcas=rec.marcas||marcas;
-      proveedores=rec.proveedores||[];
-      historialPrecios=rec.historialPrecios||[];
-      nextProdId=rec.nextProdId||(Math.max(...productos.map(p=>p.id))+1);
-      nextMarcaId=rec.nextMarcaId||(Math.max(...marcas.map(m=>m.id))+1);
-      nextProvId=rec.nextProvId||1;
-      if(el){el.textContent="✓ Datos cargados";el.style.color="var(--green)";setTimeout(()=>el.textContent="",3000);}
-    } else {
-      if(el){el.textContent="⚠ Sin datos en la nube";el.style.color="var(--warn)";setTimeout(()=>el.textContent="",4000);}
-    }
+    window._fbOnSnapshot(rec=>{
+      if(rec&&rec.productos&&rec.productos.length>0){
+        productos=rec.productos;
+        movimientos=rec.movimientos||[];
+        marcas=rec.marcas||marcas;
+        proveedores=rec.proveedores||[];
+        historialPrecios=rec.historialPrecios||[];
+        nextProdId=rec.nextProdId||(Math.max(...productos.map(p=>p.id))+1);
+        nextMarcaId=rec.nextMarcaId||(Math.max(...marcas.map(m=>m.id))+1);
+        nextProvId=rec.nextProvId||1;
+        normalizarFechasLotes();
+        // Refrescar UI
+        const auth=sessionStorage.getItem('stk_auth');
+        if(auth==='admin'){
+          renderStats();
+          const sec=document.querySelector('.section.active');
+          if(sec&&sec.id==='sec-dashboard') renderDashboard(); else renderStats();
+          renderAlertas();
+          const el2=document.getElementById('sync-status');
+          if(el2){el2.textContent='✓ Sincronizado';el2.style.color='var(--green)';setTimeout(()=>el2.textContent='',2000);}
+        } else if(auth==='operador'){
+          opRenderHistory();
+          if(opProd){const p=productos.find(x=>x.id===opProd.id);if(p)opMostrarProducto(p);}
+        }
+      } else {
+        if(el){el.textContent="⚠ Sin datos";el.style.color="var(--warn)";setTimeout(()=>el.textContent="",4000);}
+      }
+    });
   } catch(e){
-    console.warn("Error cargando:",e);
-    if(el){el.textContent="⚠ Sin conexión — reintentando...";el.style.color="var(--danger)";}
-    // Reintentar una vez después de 3 segundos
-    setTimeout(()=>cargarDesdeBin(),3000);
+    console.warn("Error Firebase:",e);
+    if(el){el.textContent="⚠ Sin conexión";el.style.color="var(--danger)";}
   }
 }
 async function guardarEnBin(){
   if(syncBusy)return; syncBusy=true;
   try{
-    await fetch(JSONBIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify({productos,movimientos,marcas,proveedores,historialPrecios,nextProdId,nextMarcaId,nextProvId})});
+    await window._fbSetDoc({productos,movimientos,marcas,proveedores,historialPrecios,nextProdId,nextMarcaId,nextProvId});
     const el=document.getElementById('sync-status');
-    if(el){el.textContent='✓ Guardado';el.style.color='var(--green)';setTimeout(()=>el.textContent='',3000);}
+    if(el){el.textContent='✓ Guardado';el.style.color='var(--green)';setTimeout(()=>el.textContent='',2000);}
   }catch(e){
     const el=document.getElementById('sync-status');
-    if(el){el.textContent='⚠ Sin conexión';el.style.color='var(--danger)';}
+    if(el){el.textContent='⚠ Error al guardar';el.style.color='var(--danger)';}
+    console.error('Error guardando en Firebase:',e);
   }finally{syncBusy=false;}
 }
 function populateRecProv(){const s=document.getElementById('rec-prov');if(s)s.innerHTML='<option value="">— Sin proveedor —</option>'+proveedores.map(p=>'<option value="'+p.id+'">'+p.nombre+'</option>').join('');}
@@ -1448,34 +1488,5 @@ window.addEventListener('popstate', function() {
   }
 });
 
-// ── AUTO-SYNC CADA 30 SEGUNDOS ────────────────────────────────────────────────
-setInterval(async () => {
-  try {
-    const r = await fetch(JSONBIN_URL+'/latest', {headers:{'X-Master-Key':JSONBIN_KEY}});
-    const data = await r.json();
-    const rec = data.record;
-    if (!rec) return;
-    const remoteTs = rec.movimientos && rec.movimientos.length > 0 ? rec.movimientos[0].ts : 0;
-    const localTs  = movimientos.length > 0 ? movimientos[0].ts : 0;
-    if (remoteTs > localTs) {
-      productos = rec.productos || productos;
-      movimientos = rec.movimientos || movimientos;
-      marcas = rec.marcas || marcas;
-      proveedores = rec.proveedores || proveedores;
-      historialPrecios = rec.historialPrecios || historialPrecios;
-      nextProdId = rec.nextProdId || nextProdId;
-      const auth = sessionStorage.getItem('stk_auth');
-      if (auth === 'admin') {
-        const sec = document.querySelector('.section.active');
-        if (sec && sec.id === 'sec-dashboard') renderDashboard(); else renderStats();
-        renderAlertas();
-        const el = document.getElementById('sync-status');
-        if (el) { el.textContent = '🔄 Actualizado'; el.style.color = 'var(--accent)'; setTimeout(()=>el.textContent='', 2500); }
-      } else if (auth === 'operador') {
-        opRenderHistory();
-        if (opProd) { const p = productos.find(x=>x.id===opProd.id); if(p) opMostrarProducto(p); }
-      }
-    }
-  } catch(e) {}
-}, 30000);
+// Firebase maneja sincronización en tiempo real — no necesita polling
 </script>
