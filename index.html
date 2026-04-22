@@ -1332,55 +1332,26 @@ async function cargarDesdeBin(){
       nextProdId=rec.nextProdId||(Math.max(...productos.map(p=>p.id))+1);
       nextMarcaId=rec.nextMarcaId||(Math.max(...marcas.map(m=>m.id))+1);
       nextProvId=rec.nextProvId||1;
-      // Guardar copia en localStorage como respaldo
-      try{ localStorage.setItem('stk_backup', JSON.stringify({productos,movimientos,marcas,proveedores,historialPrecios,nextProdId,nextMarcaId,nextProvId,ts:Date.now()})); }catch(e2){}
       if(el){el.textContent="✓ Datos cargados";el.style.color="var(--green)";setTimeout(()=>el.textContent="",3000);}
     } else {
-      // Bin vacío — intentar restaurar desde localStorage si hay backup
-      try{
-        const bk=localStorage.getItem('stk_backup');
-        if(bk){
-          const d=JSON.parse(bk);
-          productos=d.productos||productos; movimientos=d.movimientos||[]; marcas=d.marcas||marcas;
-          proveedores=d.proveedores||[]; historialPrecios=d.historialPrecios||[];
-          nextProdId=d.nextProdId||nextProdId; nextMarcaId=d.nextMarcaId||nextMarcaId; nextProvId=d.nextProvId||nextProvId;
-          if(el){el.textContent="⚠ Restaurado desde backup local";el.style.color="var(--warn)";setTimeout(()=>el.textContent="",4000);}
-          // Guardar el backup en el bin
-          await guardarEnBin();
-          return;
-        }
-      }catch(e2){}
-      // Sin backup — NO sobreescribir el bin, solo usar datos del HTML
-      if(el){el.textContent="⚠ Bin vacío — datos locales";el.style.color="var(--warn)";setTimeout(()=>el.textContent="",4000);}
+      if(el){el.textContent="⚠ Sin datos en la nube";el.style.color="var(--warn)";setTimeout(()=>el.textContent="",4000);}
     }
   } catch(e){
     console.warn("Error cargando:",e);
-    // Intentar restaurar desde localStorage
-    try{
-      const bk=localStorage.getItem('stk_backup');
-      if(bk){
-        const d=JSON.parse(bk);
-        productos=d.productos||productos; movimientos=d.movimientos||[]; marcas=d.marcas||marcas;
-        proveedores=d.proveedores||[]; historialPrecios=d.historialPrecios||[];
-        nextProdId=d.nextProdId||nextProdId; nextMarcaId=d.nextMarcaId||nextMarcaId; nextProvId=d.nextProvId||nextProvId;
-        if(el){el.textContent="📱 Datos del backup local";el.style.color="var(--warn)";setTimeout(()=>el.textContent="",4000);}
-        return;
-      }
-    }catch(e2){}
-    if(el){el.textContent="⚠ Sin conexión";el.style.color="var(--danger)";}
+    if(el){el.textContent="⚠ Sin conexión — reintentando...";el.style.color="var(--danger)";}
+    // Reintentar una vez después de 3 segundos
+    setTimeout(()=>cargarDesdeBin(),3000);
   }
 }
 async function guardarEnBin(){
   if(syncBusy)return; syncBusy=true;
-  // Siempre guardar en localStorage primero (respaldo instantáneo)
-  try{ localStorage.setItem('stk_backup', JSON.stringify({productos,movimientos,marcas,proveedores,historialPrecios,nextProdId,nextMarcaId,nextProvId,ts:Date.now()})); }catch(e2){}
   try{
     await fetch(JSONBIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify({productos,movimientos,marcas,proveedores,historialPrecios,nextProdId,nextMarcaId,nextProvId})});
     const el=document.getElementById('sync-status');
     if(el){el.textContent='✓ Guardado';el.style.color='var(--green)';setTimeout(()=>el.textContent='',3000);}
   }catch(e){
     const el=document.getElementById('sync-status');
-    if(el){el.textContent='⚠ Guardado local (sin internet)';el.style.color='var(--warn)';}
+    if(el){el.textContent='⚠ Sin conexión';el.style.color='var(--danger)';}
   }finally{syncBusy=false;}
 }
 function populateRecProv(){const s=document.getElementById('rec-prov');if(s)s.innerHTML='<option value="">— Sin proveedor —</option>'+proveedores.map(p=>'<option value="'+p.id+'">'+p.nombre+'</option>').join('');}
