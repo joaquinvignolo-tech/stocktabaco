@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1a1612">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1429,7 +1432,8 @@ function renderRanking(){
 }
 function rkScroll(cat){const el=document.getElementById('rk-cat-'+cat);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 
-if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/stocktabaco/sw.js').catch(e=>console.log('SW:',e));});}
+// Service Worker desactivado para evitar cache de datos
+if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(r=>r.unregister()));}
 </script>
 </body></html>
 <script>
