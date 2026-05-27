@@ -1185,6 +1185,21 @@ function renderStats(){
     `<div class="stat-card" style="${cs}" onclick="filtrarPorEstado('agotado')"><div class="stat-label">Agotados</div><div class="stat-val danger">${ag}</div><div style="font-size:10px;color:var(--text3);margin-top:4px">Ver lista ›</div></div>`+
     `<div class="stat-card"><div class="stat-label">Valor inventario</div><div class="stat-val accent" style="font-size:17px">${fmt$(val)}</div></div>`;
 }
+function irAMarca(marcaId){
+  const sel=document.getElementById('fil-marca');
+  if(sel) sel.value=marcaId;
+  const b=document.getElementById('buscar-prod');
+  if(b) b.value='';
+  const fe=document.getElementById('fil-estado');
+  if(fe) fe.value='';
+  const fc=document.getElementById('fil-cat');
+  if(fc) fc.value='';
+  const btn=document.querySelector('.nav-item[onclick*=productos]');
+  showSection('productos',btn);
+  document.querySelectorAll('.bnav-item').forEach(x=>x.classList.remove('active'));
+  const bnavStock=document.querySelector('.bnav-item[onclick*=productos]');
+  if(bnavStock) bnavStock.classList.add('active');
+}
 function filtrarPorEstado(e){const s=document.getElementById('fil-estado');if(s)s.value=e;const b=document.getElementById('buscar-prod');if(b)b.value='';const btn=document.querySelector('.nav-item[onclick*="\'productos\'"]');showSection('productos',btn);}
 
 const CAT_COLORS={'Cigarrillos':'#c8965a','Tabaco':'#5a9e6e','Papeles':'#6a8fc8','Filtros':'#c87a5a','Encendedores':'#e8c85a','Accesorios':'#9a7ac8','Cigarros / Puros':'#d4924a','Otros':'#6b8e8e'};
@@ -1252,7 +1267,7 @@ function renderDashboard(){
       </div>`;
     }
   }).join('') : '<div style="font-size:13px;color:var(--text3);padding:8px 0">Sin movimientos aún.</div>';
-  document.getElementById('dash-marcas').innerHTML=marcas.filter(mr=>productos.some(p=>p.marcaId===mr.id)).map(mr=>{const ps=productos.filter(p=>p.marcaId===mr.id);return `<div class="marca-card"><div class="marca-card-name">${mr.nombre}</div><div class="marca-card-sub">${ps.length} variedad${ps.length!==1?'es':''}</div><div class="marca-card-stock">${ps.reduce((a,p)=>a+p.stock,0)}</div><div style="font-size:10px;color:var(--text3);margin-top:2px">unidades</div></div>`;}).join('');
+  document.getElementById('dash-marcas').innerHTML=marcas.filter(mr=>productos.some(p=>p.marcaId===mr.id)).map(mr=>{const ps=productos.filter(p=>p.marcaId===mr.id);return `<div class="marca-card" onclick="irAMarca(${mr.id})" title="Ver productos de ${mr.nombre}"><div class="marca-card-name">${mr.nombre}</div><div class="marca-card-sub">${ps.length} variedad${ps.length!==1?'es':''}</div><div class="marca-card-stock">${ps.reduce((a,p)=>a+p.stock,0)}</div><div style="font-size:10px;color:var(--text3);margin-top:2px">unidades</div></div>`;}).join('');
   setTimeout(renderCharts,50);
 }
 
